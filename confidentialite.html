@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Confidentialité Serevo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Comment Serevo traite les données de ses clients et des visiteurs de son site.">
+<link rel="icon" type="image/png" href="images/symbole-96.png">
+<link rel="stylesheet" href="polices/polices.css">
+<style>
+/* Disposition : un document à lire, une colonne de texte, la nuit de Serevo en fond. */
+:root {
+  --nuit: #050813;
+  --verre: rgba(150, 190, 255, 0.06);
+  --trait: rgba(170, 200, 255, 0.14);
+  --texte: #eef3ff;
+  --texte-2: rgba(222, 232, 255, 0.74);
+  --texte-3: rgba(222, 232, 255, 0.48);
+  --ciel: #8cc8ff;
+  --a-completer: #ffd9a8;
+  --titre: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --corps: Inter, 'Segoe UI', system-ui, sans-serif;
+  --chiffres: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(60% 40% at 80% 0%, rgba(72, 120, 240, 0.22), transparent 70%), var(--nuit);
+  color: var(--texte);
+  font: 16.5px/1.7 var(--corps);
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--nuit);
+}
+.cadre {
+  max-width: 760px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.barre { border-bottom: 1px solid var(--trait); }
+.barre .cadre { max-width: 1240px; display: flex; align-items: center; justify-content: space-between; height: 76px; }
+.marque { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.marque img { width: 32px; height: 32px; filter: drop-shadow(0 0 12px rgba(140, 200, 255, 0.55)); }
+.marque span { font: 700 24px var(--titre); letter-spacing: -0.03em; }
+.retour { color: var(--texte-2); text-decoration: none; font-size: 15px; }
+.retour:hover { color: var(--texte); }
+main { padding-block: 64px 100px; }
+.surtitre { font: 12px var(--chiffres); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ciel); margin: 0; }
+h1 { font: 800 clamp(34px, 5vw, 52px)/1.05 var(--titre); letter-spacing: -0.035em; margin: 14px 0 18px; text-wrap: balance; }
+h2 { font: 700 23px/1.3 var(--titre); letter-spacing: -0.015em; margin: 52px 0 12px; text-wrap: balance; }
+h3 { font: 700 17px var(--titre); margin: 26px 0 8px; }
+p, li { color: var(--texte-2); }
+p { margin: 0 0 14px; }
+ul { margin: 0 0 14px; padding-left: 20px; }
+li { margin-bottom: 6px; }
+strong { color: var(--texte); font-weight: 600; }
+a { color: var(--ciel); }
+.mise-a-jour { font: 13px var(--chiffres); color: var(--texte-3); }
+.resume {
+  margin-top: 30px;
+  padding: 22px 24px;
+  border-radius: 20px;
+  background: var(--verre);
+  border: 1px solid var(--trait);
+}
+.resume p:last-child, .resume ul:last-child { margin-bottom: 0; }
+.a-completer {
+  color: var(--a-completer);
+  border-bottom: 1px dashed var(--a-completer);
+}
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tableau { overflow-x: auto; margin: 6px 0 16px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--trait); vertical-align: top; color: var(--texte-2); }
+th { font: 600 13px var(--titre); color: var(--texte); }
+footer { border-top: 1px solid var(--trait); padding-block: 30px; color: var(--texte-3); font-size: 13px; }
+footer .cadre { max-width: 1240px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.signature { font-family: var(--chiffres); letter-spacing: 0.22em; }
+:focus-visible { outline: 2px solid var(--ciel); outline-offset: 3px; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<header class="barre">
+  <div class="cadre">
+    <a class="marque" href="index.html"><img src="images/symbole-96.png" alt="" width="32" height="32"><span>serevo</span></a>
+    <a class="retour" href="index.html">Retour au site</a>
+  </div>
+</header>
+
+<main>
+  <div class="cadre">
+    <p class="surtitre">Vos données</p>
+    <h1>Politique de confidentialité</h1>
+    <p class="mise-a-jour">Dernière mise à jour : 30 octobre 2026</p>
+
+    <div class="resume">
+      <p><strong>En bref.</strong></p>
+      <ul>
+        <li>Serevo lit les outils que votre entreprise lui confie (mails, agenda, tableurs, et bientôt WhatsApp) pour vous préparer le travail. Il ne vend, ne partage et ne publie aucune donnée.</li>
+        <li>Chaque entreprise cliente a son propre serveur, hébergé dans l’Union européenne.</li>
+        <li>Rien ne part vers l’extérieur sans votre validation. Serevo ne modifie jamais vos outils, et n’envoie aucun message WhatsApp.</li>
+        <li>Vos données ne servent pas à entraîner des modèles d’intelligence artificielle.</li>
+      </ul>
+    </div>
+
+    <h2>1. Qui sommes-nous</h2>
+    <p>
+      Le site serevo.fr et le service Serevo sont édités par
+      <span class="a-completer">[raison sociale, forme juridique, capital]</span>, dont le siège est situé
+      <span class="a-completer">[adresse du siège]</span>, immatriculée sous le numéro
+      <span class="a-completer">[SIREN]</span>.
+    </p>
+    <p>Pour toute question sur vos données : <strong>contact@serevo.fr</strong>.</p>
+
+    <h2>2. Deux situations différentes</h2>
+    <p>
+      <strong>Les visiteurs du site.</strong> Quand vous remplissez le formulaire de démo, Serevo décide
+      de l’usage de vos informations : il en est le <em>responsable de traitement</em> (partie 3).
+    </p>
+    <p>
+      <strong>Les entreprises clientes.</strong> Quand une entreprise utilise Serevo, c’est elle qui
+      décide de ce qu’elle lui confie : ses mails, son agenda, ses tableurs, les messages de ses clients.
+      Serevo traite ces données pour son compte et selon ses instructions : il est son
+      <em>sous-traitant</em> au sens de l’article 28 du RGPD (partie 4). Un contrat précise ces engagements.
+    </p>
+
+    <h2>3. Le formulaire de démo</h2>
+    <div class="tableau">
+      <table>
+        <thead><tr><th scope="col">Ce que nous recevons</th><th scope="col">Pourquoi</th><th scope="col">Combien de temps</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Nom, entreprise, métier, téléphone, adresse mail, outils utilisés, message, créneau choisi</td>
+            <td>Vous recontacter pour confirmer et mener la démo que vous avez demandée</td>
+            <td>Trois ans après notre dernier échange, puis suppression</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Base légale : les mesures précontractuelles prises à votre demande. Ces informations ne sont
+      ni vendues, ni louées, ni utilisées pour de la publicité.
+    </p>
+    <p>
+      Le site ne dépose aucun cookie de mesure d’audience ni de publicité, et ses polices de caractères
+      sont servies avec ses pages. Il est hébergé par GitHub Pages (GitHub, Inc., États-Unis), qui reçoit
+      l’adresse IP de votre navigateur pour lui envoyer les pages et la garde un temps limité dans ses
+      journaux techniques.
+    </p>
+
+    <h2>4. Le service Serevo, pour les entreprises clientes</h2>
+
+    <h3>Ce que Serevo lit</h3>
+    <p>Seulement ce que l’entreprise branche elle-même, avec son accord explicite chez chaque fournisseur :</p>
+    <ul>
+      <li><strong>Boîtes mail</strong> Gmail ou Outlook : les mails reçus et envoyés, pour les classer, les rattacher au bon client et préparer des réponses.</li>
+      <li><strong>Agenda</strong> Google ou Outlook, en lecture seule : les rendez-vous, pour proposer des créneaux libres et préparer la journée.</li>
+      <li><strong>Tableurs</strong> Google Sheets ou Excel, en lecture seule : la liste des clients et le suivi des devis.</li>
+      <li><strong>WhatsApp Business</strong> (bientôt), en lecture seule : les messages reçus par le numéro de l’entreprise, pour les rattacher à la fiche du client. Serevo n’envoie jamais de message WhatsApp.</li>
+    </ul>
+
+    <h3>Ce que Serevo fait de ces données</h3>
+    <ul>
+      <li>Il les range dans un serveur propre à l’entreprise, hébergé dans l’Union européenne. Aucune base n’est partagée entre deux clients.</li>
+      <li>Il les fait analyser par un modèle d’intelligence artificielle (Google Cloud Vertex AI, zone Union européenne) pour classer les messages, résumer et rédiger des brouillons. Ces données ne servent pas à entraîner les modèles.</li>
+      <li>Il prépare des réponses et des relances qui restent des brouillons tant que l’entreprise ne les a pas validées.</li>
+      <li>Il n’écrit jamais dans les agendas, les tableurs ou WhatsApp. Le seul envoi possible est celui d’un mail validé par l’entreprise.</li>
+    </ul>
+
+    <h3>Sécurité</h3>
+    <ul>
+      <li>Les autorisations d’accès aux comptes Google et Microsoft sont chiffrées (AES-256-GCM) et ne sont jamais écrites en clair.</li>
+      <li>Seuls les ordinateurs appairés par l’entreprise accèdent à son serveur, chacun avec sa propre clé, révocable à tout moment.</li>
+      <li>Chaque connexion d’une source, chaque envoi et chaque modification de réglage est inscrit dans un journal.</li>
+    </ul>
+
+    <h3>Durée de conservation</h3>
+    <p>
+      Les données sont conservées pendant la durée du contrat, selon la durée choisie par l’entreprise
+      cliente <span class="a-completer">[durée par défaut à fixer]</span>. À la fin du contrat, le serveur de
+      l’entreprise et ses données sont supprimés <span class="a-completer">[délai à fixer]</span>, après restitution
+      si elle le demande.
+    </p>
+
+    <h3>Les prestataires de Serevo</h3>
+    <div class="tableau">
+      <table>
+        <thead><tr><th scope="col">Prestataire</th><th scope="col">Rôle</th><th scope="col">Lieu</th></tr></thead>
+        <tbody>
+          <tr><td><span class="a-completer">[hébergeur]</span></td><td>Serveurs des entreprises clientes</td><td>Union européenne</td></tr>
+          <tr><td>Google Cloud (Vertex AI)</td><td>Analyse des messages par l’intelligence artificielle</td><td>Union européenne</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Google, Microsoft et Meta ne sont pas des prestataires de Serevo : ce sont les fournisseurs des
+      outils de l’entreprise, auprès desquels elle autorise Serevo à lire ses données.
+    </p>
+
+    <h3>Données reçues des services Google</h3>
+    <p>
+      L’usage et le transfert vers toute autre application des informations reçues des API Google
+      respectent la <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">politique
+      relative aux données utilisateur des services d’API Google</a>, y compris ses exigences d’usage
+      limité (« Limited Use »).
+    </p>
+
+    <h3>Messages WhatsApp</h3>
+    <p>
+      Serevo reçoit les messages WhatsApp de l’entreprise par la plateforme WhatsApp Business de Meta,
+      une fois que l’entreprise a branché son numéro. Ils sont traités comme ses mails : classés,
+      rattachés à la fiche du client, montrés au dirigeant. Serevo ne répond pas sur WhatsApp et ne
+      transmet ces messages à aucun tiers.
+    </p>
+
+    <h2>5. Vos droits</h2>
+    <p>
+      Vous pouvez demander à consulter, corriger, supprimer ou recevoir vos données, vous opposer à leur
+      traitement ou en limiter l’usage. Écrivez à <strong>contact@serevo.fr</strong> : nous répondons sous un mois.
+    </p>
+    <p>
+      Si vous êtes le client d’une entreprise qui utilise Serevo, adressez-vous d’abord à cette entreprise :
+      c’est elle qui décide de l’usage de vos messages. Nous l’aiderons à vous répondre.
+    </p>
+    <p>
+      Vous pouvez aussi saisir la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).
+    </p>
+
+    <h2>6. Changements</h2>
+    <p>
+      Si cette politique change, la nouvelle version est publiée sur cette page avec sa date. Les
+      entreprises clientes sont prévenues par mail de tout changement important.
+    </p>
+  </div>
+</main>
+
+<footer>
+  <div class="cadre">
+    <span class="signature">AI OPERATORS FOR BUSINESS</span>
+    <span>© 2026 Serevo</span>
+  </div>
+</footer>
+
+</body>
+</html>

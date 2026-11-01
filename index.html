@@ -59,6 +59,16 @@ body::before {
   z-index: 10;
   background: var(--nuit);
 }
+/* Grain très fin posé sur toute la page : il casse les dégradés en bandes et donne de la matière. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+}
 img { max-width: 100%; }
 a { color: inherit; }
 h1, h2, h3 { font-family: var(--titre); text-wrap: balance; margin: 0; }
@@ -80,12 +90,16 @@ p { margin: 0; }
 }
 
 .surtitre {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--chiffres);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ciel);
 }
+.surtitre::before { content: ""; width: 22px; height: 1px; background: currentColor; opacity: 0.6; }
 
 /* ------------------------------------------------------------------ boutons */
 .bouton {
@@ -115,11 +129,24 @@ p { margin: 0; }
 }
 .bouton:hover .fleche { transform: rotate(45deg); }
 .bouton.plein {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--degrade);
   color: #fff;
-  box-shadow: 0 14px 34px rgba(72, 120, 240, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 26px rgba(72, 120, 240, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
-.bouton.plein:hover { transform: translateY(-1px); box-shadow: 0 18px 40px rgba(72, 120, 240, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.bouton.plein::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.38) 48%, transparent 66%);
+  transform: translateX(-110%);
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.bouton.plein:hover::before { transform: translateX(110%); }
+.bouton.plein:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(72, 120, 240, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
 .bouton.voile {
   background: var(--verre-fort);
   color: var(--texte);
@@ -136,24 +163,31 @@ p { margin: 0; }
   position: sticky;
   top: env(safe-area-inset-top, 0px);
   z-index: 20;
-  background: rgba(5, 8, 19, 0.62);
+  background: rgba(5, 8, 19, 0.3);
   backdrop-filter: blur(18px) saturate(140%);
-  border-bottom: 1px solid var(--trait);
+  border-bottom: 1px solid transparent;
+  transition: background 0.35s ease, border-color 0.35s ease;
 }
+.barre.defile { background: rgba(5, 8, 19, 0.82); border-bottom-color: var(--trait); }
 .barre .cadre {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   height: 90px;
+  transition: height 0.35s ease;
 }
+.barre.defile .cadre { height: 70px; }
+.barre .marque img, .barre .marque span { transition: width 0.35s ease, height 0.35s ease, font-size 0.35s ease; }
+.barre.defile .marque img { width: 42px; height: 42px; }
+.barre.defile .marque span { font-size: 28px; }
 .marque {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
 }
-.marque img { width: 54px; height: 54px; filter: drop-shadow(0 0 16px rgba(140, 200, 255, 0.6)); }
+.marque img { width: 54px; height: 54px; filter: drop-shadow(0 0 10px rgba(140, 200, 255, 0.35)); }
 .marque span {
   font-family: var(--titre);
   font-weight: 700;
@@ -166,13 +200,29 @@ p { margin: 0; }
 }
 .liens { display: flex; gap: 30px; }
 .liens a {
+  position: relative;
   text-decoration: none;
   font-size: 15px;
   font-weight: 500;
   color: var(--texte-2);
   transition: color 0.2s;
 }
-.liens a:hover { color: var(--texte); }
+.liens a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--ciel);
+  opacity: 0;
+  transform: scale(0.3);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.liens a:hover, .liens a.actif { color: var(--texte); }
+.liens a.actif::after { opacity: 1; transform: none; }
 @media (max-width: 960px) { .liens { display: none; } }
 @media (max-width: 420px) { .barre .bouton .libelle-long { display: none; } }
 
@@ -183,58 +233,77 @@ p { margin: 0; }
   padding-top: 72px;
   isolation: isolate;
 }
-/* Aurores : de grandes nappes de bleu floutées qui dérivent lentement. */
-.aurore {
+/* Le ciel : une seule source de lumière, l'horizon derrière l'écran de l'appli, comme le bord
+   d'une planète au petit matin. Il s'allume doucement au chargement. */
+.ouverture { background: radial-gradient(ellipse 70% 55% at 50% -12%, rgba(72, 120, 240, 0.2), transparent 70%), var(--nuit); }
+.horizon {
   position: absolute;
-  inset: -20% -10% 0;
+  left: 50%;
+  bottom: -900px;
+  width: max(1700px, 150vw);
+  height: 1300px;
   z-index: -1;
-  pointer-events: none;
-}
-.aurore span {
-  position: absolute;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.55;
-  animation: deriver 26s ease-in-out infinite alternate;
+  translate: -50% 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, #0f1c4a 0%, var(--nuit) 70%);
+  box-shadow:
+    0 -1px 0 0 rgba(170, 215, 255, 0.75),
+    0 -18px 50px -14px rgba(110, 165, 255, 0.6),
+    0 -90px 180px -40px rgba(72, 120, 240, 0.38);
+  animation: aube 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-.aurore span:nth-child(1) { width: 52vw; height: 34vw; left: -6vw; top: 8%; background: #1b3b9a; }
-.aurore span:nth-child(2) { width: 46vw; height: 30vw; right: -8vw; top: 4%; background: #2a6fd6; opacity: 0.42; animation-duration: 32s; }
-.aurore span:nth-child(3) { width: 40vw; height: 22vw; left: 30vw; top: 38%; background: #4f9ef0; opacity: 0.28; animation-duration: 38s; }
-.aurore::after {
+@keyframes aube {
+  from { opacity: 0; translate: -50% 80px; }
+  to { opacity: 1; translate: -50% 0; }
+}
+/* Un fin quadrillage, à peine visible, qui s'efface vers l'horizon. */
+.ouverture::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(214, 233, 255, 0.55) 1px, transparent 1.2px);
-  background-size: 140px 140px;
-  background-position: 30px 50px;
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 55%);
-  opacity: 0.35;
-}
-@keyframes deriver {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(4vw, 3vw, 0) scale(1.12); }
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(170, 200, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(170, 200, 255, 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  background-position: center top;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 20%, #000 0%, transparent 75%);
 }
 
 .ouverture .cadre { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .pastille {
   display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
-  padding: 5px 16px 5px 5px;
+  gap: 6px 12px;
+  padding: 8px 18px 8px 14px;
   border-radius: 999px;
-  background: var(--verre);
+  background: rgba(10, 18, 48, 0.55);
   border: 1px solid var(--trait);
-  font-size: 14.5px;
+  box-shadow: inset 0 1px 0 rgba(214, 233, 255, 0.06);
+  font-size: 14px;
   color: var(--texte-2);
 }
-.pastille b {
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--degrade);
-  color: #fff;
-  font-family: var(--titre);
-  font-weight: 700;
-  font-size: 13.5px;
+.pastille b { display: inline-flex; align-items: center; gap: 10px; color: var(--texte); font-weight: 600; }
+.pastille b::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ciel);
+  animation: signal 2.6s ease-out infinite;
+}
+.pastille b::after { content: ""; width: 1px; height: 14px; margin-left: 2px; background: var(--trait); }
+@media (max-width: 560px) {
+  .pastille { border-radius: 20px; padding-inline: 18px; }
+  .pastille b::after { display: none; }
+}
+@keyframes signal {
+  0% { box-shadow: 0 0 0 0 rgba(140, 200, 255, 0.55); }
+  70%, 100% { box-shadow: 0 0 0 9px rgba(140, 200, 255, 0); }
 }
 .ouverture h1 {
   margin-top: 26px;
@@ -259,26 +328,7 @@ p { margin: 0; }
 }
 .appels { margin-top: 36px; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
 
-/* Tuiles inclinées de part et d'autre du titre, comme posées sur la table. */
-.tuile-flottante {
-  position: absolute;
-  width: 76px;
-  height: 76px;
-  border-radius: 20px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(160deg, rgba(214, 233, 255, 0.95), rgba(170, 205, 255, 0.85));
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 #fff;
-  animation: flotter 7s ease-in-out infinite;
-}
-.tuile-flottante img { width: 40px; height: 40px; }
-.tuile-flottante.gauche { left: 2%; top: 170px; transform: rotate(-14deg); }
-.tuile-flottante.droite { right: 3%; top: 250px; transform: rotate(11deg); animation-delay: -3s; }
-@keyframes flotter {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -10px; }
-}
-@media (max-width: 1080px) { .tuile-flottante { display: none; } }
+
 
 /* ------------------------------------------------------------------ l'appli, en vitrine */
 .ecran {
@@ -288,8 +338,8 @@ p { margin: 0; }
   width: min(1120px, 100%);
   padding: 14px 14px 0;
   border-radius: 30px 30px 0 0;
-  background: linear-gradient(180deg, rgba(160, 200, 255, 0.28), rgba(160, 200, 255, 0.06));
-  box-shadow: 0 -30px calc(70px + (1 - var(--bascule)) * 90px) rgba(72, 120, 240, calc(0.22 + (1 - var(--bascule)) * 0.3));
+  background: linear-gradient(180deg, rgba(170, 210, 255, 0.22), rgba(160, 200, 255, 0.04) 70%);
+  box-shadow: inset 0 1px 0 rgba(214, 233, 255, 0.25), 0 -30px calc(60px + (1 - var(--bascule)) * 70px) rgba(72, 120, 240, calc(0.16 + (1 - var(--bascule)) * 0.2));
   transform-origin: 50% 0%;
   transform: perspective(1700px) rotateX(calc(var(--bascule) * 22deg)) scale(calc(1 - var(--bascule) * 0.1));
   will-change: transform;
@@ -441,7 +491,7 @@ p { margin: 0; }
 .outils {
   position: relative;
   z-index: 1;
-  background: linear-gradient(180deg, #0b1230 0%, var(--nuit) 100%);
+  background: linear-gradient(180deg, #091027 0%, var(--nuit) 100%);
   border-top: 1px solid var(--trait);
   padding-block: 54px 30px;
 }
@@ -460,6 +510,8 @@ p { margin: 0; }
   font-weight: 600;
   font-size: 16px;
 }
+.outil { transition: translate 0.25s ease, border-color 0.25s ease, background 0.25s ease; }
+.outil:not(.bientot):hover { translate: 0 -2px; border-color: rgba(140, 200, 255, 0.35); background: var(--verre-fort); }
 .outil img { width: 26px; height: 26px; }
 .outil.bientot { color: var(--texte-3); border-style: dashed; background: transparent; font-weight: 500; }
 .outil small { font-family: var(--chiffres); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ciel); }
@@ -474,6 +526,33 @@ p { margin: 0; }
   margin-inline: auto;
 }
 .manifeste h2 span { color: var(--texte-3); }
+
+/* ------------------------------------------------------------------ détails communs */
+/* Le bord d'une carte s'éclaire là où passe la souris. */
+.eclaire { position: relative; }
+.eclaire::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(140, 200, 255, 0.6), transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.eclaire:hover::after { opacity: 1; }
+/* Ce qui arrive au défilement glisse doucement en place. Sans script, tout est déjà affiché. */
+.apparait {
+  opacity: 0;
+  translate: 0 22px;
+  transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.apparait.vu { opacity: 1; translate: 0 0; }
 
 /* ------------------------------------------------------------------ pour qui */
 .pour-qui { padding-block: 40px 30px; }
@@ -493,7 +572,17 @@ p { margin: 0; }
 .metier .prepare { padding-top: 14px; border-top: 1px dashed var(--trait); color: var(--texte-2); font-size: 14.5px; }
 
 /* ------------------------------------------------------------------ une nuit */
-.section { padding-block: 90px; }
+.section { position: relative; padding-block: 96px; }
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(1160px, 92%);
+  height: 1px;
+  translate: -50% 0;
+  background: linear-gradient(90deg, transparent, var(--trait) 20%, var(--trait) 80%, transparent);
+}
 .entete-section { display: grid; gap: 16px; max-width: 760px; }
 .entete-section h2 { font-size: clamp(30px, 4vw, 50px); line-height: 1.06; font-weight: 800; letter-spacing: -0.035em; }
 .entete-section p { color: var(--texte-2); font-size: 17.5px; max-width: 62ch; }
@@ -504,6 +593,25 @@ p { margin: 0; }
   border-radius: 999px;
   background: linear-gradient(90deg, #1d2f74 0%, #0b1230 38%, #0b1230 62%, #3a5fbf 82%, #ffd9a8 100%);
   position: relative;
+}
+.ciel-horaire::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 228, 190, 0.22), 0 0 18px rgba(255, 228, 190, 0.8);
+}
+.ciel-horaire.apparait::after { left: 0; background: var(--glace); box-shadow: 0 0 0 4px rgba(140, 200, 255, 0.2), 0 0 16px rgba(140, 200, 255, 0.8); }
+.ciel-horaire.apparait.vu::after {
+  left: 100%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 228, 190, 0.22), 0 0 18px rgba(255, 228, 190, 0.8);
+  transition: left 2.6s cubic-bezier(0.45, 0, 0.2, 1) 0.4s, background 2.6s ease 0.4s, box-shadow 2.6s ease 0.4s;
 }
 .heures {
   display: flex;
@@ -864,9 +972,9 @@ p { margin: 0; }
 /* ------------------------------------------------------------------ l'aube : rendez-vous */
 .aube {
   position: relative;
-  background: linear-gradient(180deg, var(--nuit) 0, #1c2f6b 50px, #8fa9de 110px, #dce6f7 150px, var(--aube) 190px);
+  background: linear-gradient(180deg, var(--nuit) 0, #0c1738 50px, #24407f 105px, #6f8fcf 155px, #b9cbee 200px, #e2eaf8 240px, var(--aube) 280px);
   color: var(--encre);
-  padding-block: 220px 90px;
+  padding-block: 270px 96px;
 }
 .aube .entete-section h2 { color: var(--encre); }
 .aube .entete-section p { color: var(--encre-2); }
@@ -1078,9 +1186,25 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
 }
 .faq details[open] summary::after { transform: rotate(45deg); background: var(--encre); color: #fff; }
 .faq details p { padding-bottom: 20px; color: var(--encre-2); max-width: 64ch; }
+.faq details { transition: border-color 0.25s ease, box-shadow 0.25s ease; }
+.faq details:hover { border-color: rgba(72, 120, 240, 0.35); }
+.faq details[open] { box-shadow: 0 18px 40px rgba(11, 21, 51, 0.08); }
 
 /* ------------------------------------------------------------------ pied */
 .pied { position: relative; overflow: hidden; padding-block: 70px 30px; border-top: 1px solid var(--trait); }
+.pied::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: min(900px, 90%);
+  height: 160px;
+  translate: -50% 0;
+  pointer-events: none;
+  border-top: 1px solid rgba(140, 200, 255, 0.5);
+  background: radial-gradient(ellipse 50% 100% at 50% 0%, rgba(72, 120, 240, 0.16), transparent 80%);
+  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+}
 .pied .cadre { display: grid; gap: 50px; }
 .pied-haut { display: flex; justify-content: space-between; gap: 30px; flex-wrap: wrap; }
 .pied-haut p { color: var(--texte-2); max-width: 40ch; margin-top: 14px; }
@@ -1135,11 +1259,8 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
 
 <main id="haut">
   <section class="ouverture">
-    <div class="aurore" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="horizon" aria-hidden="true"></div>
     <div class="cadre">
-      <div class="tuile-flottante gauche" aria-hidden="true"><img src="images/outils/gmail.png" alt=""></div>
-      <div class="tuile-flottante droite" aria-hidden="true"><img src="images/outils/google-agenda.png" alt=""></div>
-
       <p class="pastille"><b>Assistant IA</b> pour les dirigeants de TPE et PME</p>
       <h1>Vous faites votre métier. <em>Serevo tient le bureau.</em></h1>
       <p class="chapeau">
@@ -1671,6 +1792,60 @@ Durand & Associés</textarea>
 </footer>
 
 <script>
+// Les finitions : la barre s'affine au défilement, le menu montre la section en cours, le bord
+// des cartes suit la souris, et les blocs glissent en place quand ils arrivent à l'écran.
+(function () {
+  const calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const barre = document.querySelector('.barre');
+  const majBarre = () => barre.classList.toggle('defile', window.scrollY > 12);
+  window.addEventListener('scroll', majBarre, { passive: true });
+  majBarre();
+
+  if ('IntersectionObserver' in window) {
+    const liens = new Map();
+    document.querySelectorAll('.liens a').forEach((lien) => liens.set(lien.getAttribute('href').slice(1), lien));
+    const espion = new IntersectionObserver((entrees) => {
+      for (const entree of entrees) {
+        const lien = liens.get(entree.target.id);
+        if (lien !== undefined) lien.classList.toggle('actif', entree.isIntersecting);
+      }
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    liens.forEach((lien, id) => {
+      const section = document.getElementById(id);
+      if (section !== null) espion.observe(section);
+    });
+  }
+
+  document.querySelectorAll('.metier, .moment, .pont, .etape, .tarif-carte').forEach((carte) => {
+    carte.classList.add('eclaire');
+    carte.addEventListener('pointermove', (evenement) => {
+      const cadre = carte.getBoundingClientRect();
+      carte.style.setProperty('--mx', `${evenement.clientX - cadre.left}px`);
+      carte.style.setProperty('--my', `${evenement.clientY - cadre.top}px`);
+    });
+  });
+
+  if (calme || !('IntersectionObserver' in window)) return;
+  const apparition = new IntersectionObserver((entrees) => {
+    for (const entree of entrees) {
+      if (!entree.isIntersecting) continue;
+      entree.target.classList.add('vu');
+      apparition.unobserve(entree.target);
+      setTimeout(() => { entree.target.style.transitionDelay = ''; }, 1600);
+    }
+  }, { rootMargin: '0px 0px -8% 0px' });
+  const cibles = '.entete-section, .manifeste h2, .metier, .ciel-horaire, .moment, .pont, .orbite, .brouillon, .regle, .etape, .tarif-carte, .annee, .reservation, .faq details';
+  document.querySelectorAll(cibles).forEach((element) => {
+    // Ce qui est déjà à l'écran au chargement reste affiché tel quel.
+    if (element.getBoundingClientRect().top < window.innerHeight) return;
+    const rang = Array.prototype.indexOf.call(element.parentElement.children, element);
+    element.style.transitionDelay = `${Math.min(rang, 4) * 80}ms`;
+    element.classList.add('apparait');
+    apparition.observe(element);
+  });
+})();
+
 // L'écran de l'appli, en vitrine : il se redresse au défilement, et joue une courte scène à
 // l'ouverture. Rien de tout cela si le visiteur demande moins d'animations.
 (function () {

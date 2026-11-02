@@ -31,7 +31,9 @@
   --alerte: #f2a3b3;
   --degrade: linear-gradient(135deg, #8cc8ff 0%, #4878f0 100%);
 
-  --titre: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --titre: Inter, 'Segoe UI', system-ui, sans-serif;
+  /* Le mot « serevo » du logo garde la police de la marque. */
+  --marque: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
   --corps: Inter, 'Segoe UI', system-ui, sans-serif;
   --chiffres: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
@@ -105,58 +107,30 @@ p { margin: 0; }
 .bouton {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
-  height: 52px;
-  padding: 0 7px 0 24px;
-  border-radius: 999px;
-  border: 0;
-  font-family: var(--titre);
-  font-weight: 700;
-  font-size: 15.5px;
+  gap: 10px;
+  height: 46px;
+  padding: 0 18px 0 20px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: var(--corps);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.005em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
-.bouton .fleche {
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: var(--nuit);
-  color: var(--texte);
-  transition: transform 0.25s ease;
-}
-.bouton:hover .fleche { transform: rotate(45deg); }
-.bouton.plein {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  background: var(--degrade);
-  color: #fff;
-  box-shadow: 0 10px 26px rgba(72, 120, 240, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-}
-.bouton.plein::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.38) 48%, transparent 66%);
-  transform: translateX(-110%);
-  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.bouton.plein:hover::before { transform: translateX(110%); }
-.bouton.plein:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(72, 120, 240, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
-.bouton.voile {
-  background: var(--verre-fort);
-  color: var(--texte);
-  border: 1px solid var(--trait);
-  backdrop-filter: blur(10px);
-}
-.bouton.voile .fleche { background: var(--glace); color: var(--nuit); }
-.bouton.voile:hover { background: rgba(150, 190, 255, 0.16); }
-.bouton.petit { height: 44px; font-size: 14px; padding-left: 18px; gap: 10px; }
-.bouton.petit .fleche { width: 32px; height: 32px; }
+.bouton .fleche { display: inline-grid; place-items: center; transition: translate 0.25s ease; }
+.bouton .fleche svg { width: 13px; height: 13px; }
+.bouton:hover .fleche { translate: 2px -2px; }
+.bouton.plein { background: #eef3ff; color: var(--nuit); }
+.bouton.plein:hover { background: #fff; }
+.bouton.voile { background: transparent; color: var(--texte); border-color: rgba(170, 200, 255, 0.22); }
+.bouton.voile:hover { background: var(--verre); border-color: rgba(170, 200, 255, 0.4); }
+.bouton.voile:hover .fleche { translate: 0 2px; }
+.bouton.petit { height: 38px; font-size: 14px; padding: 0 14px 0 16px; border-radius: 9px; }
+.aube .bouton.plein { background: var(--encre); color: #fff; }
+.aube .bouton.plein:hover { background: #1a2a63; }
 
 /* ------------------------------------------------------------------ barre */
 .barre {
@@ -187,9 +161,9 @@ p { margin: 0; }
   gap: 12px;
   text-decoration: none;
 }
-.marque img { width: 54px; height: 54px; filter: drop-shadow(0 0 10px rgba(140, 200, 255, 0.35)); }
+.marque img { width: 54px; height: 54px; }
 .marque span {
-  font-family: var(--titre);
+  font-family: var(--marque);
   font-weight: 700;
   font-size: 34px;
   letter-spacing: -0.035em;
@@ -306,20 +280,15 @@ p { margin: 0; }
   70%, 100% { box-shadow: 0 0 0 9px rgba(140, 200, 255, 0); }
 }
 .ouverture h1 {
-  margin-top: 26px;
-  font-size: clamp(40px, 6.6vw, 86px);
+  margin-top: 28px;
+  font-size: clamp(42px, 6.8vw, 92px);
   line-height: 1.02;
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  font-weight: 500;
+  letter-spacing: -0.05em;
   max-width: 15ch;
+  color: rgba(222, 232, 255, 0.5);
 }
-.ouverture h1 em {
-  font-style: normal;
-  background: linear-gradient(100deg, #d6e9ff 0%, #8cc8ff 45%, #5d8ff5 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+.ouverture h1 em { font-style: normal; color: var(--texte); }
 .ouverture .chapeau {
   margin-top: 26px;
   max-width: 60ch;
@@ -336,10 +305,10 @@ p { margin: 0; }
   position: relative;
   margin-top: 70px;
   width: min(1120px, 100%);
-  padding: 14px 14px 0;
-  border-radius: 30px 30px 0 0;
+  padding: 12px 12px 0;
+  border-radius: 18px 18px 0 0;
   background: linear-gradient(180deg, rgba(170, 210, 255, 0.22), rgba(160, 200, 255, 0.04) 70%);
-  box-shadow: inset 0 1px 0 rgba(214, 233, 255, 0.25), 0 -30px calc(60px + (1 - var(--bascule)) * 70px) rgba(72, 120, 240, calc(0.16 + (1 - var(--bascule)) * 0.2));
+  box-shadow: inset 0 1px 0 rgba(214, 233, 255, 0.22), 0 40px 100px rgba(0, 0, 0, 0.45);
   transform-origin: 50% 0%;
   transform: perspective(1700px) rotateX(calc(var(--bascule) * 22deg)) scale(calc(1 - var(--bascule) * 0.1));
   will-change: transform;
@@ -354,7 +323,7 @@ p { margin: 0; }
   content: "";
   position: absolute;
   inset: 14px 14px 0;
-  border-radius: 20px 20px 0 0;
+  border-radius: 10px 10px 0 0;
   pointer-events: none;
   background: linear-gradient(115deg, transparent 30%, rgba(214, 233, 255, 0.07) 45%, transparent 60%);
   background-size: 260% 100%;
@@ -400,7 +369,7 @@ p { margin: 0; }
 .appli {
   display: grid;
   grid-template-columns: 58px 1fr;
-  border-radius: 20px 20px 0 0;
+  border-radius: 10px 10px 0 0;
   overflow: hidden;
   background: radial-gradient(120% 90% at 20% 0%, #13245c 0%, #070b1a 55%);
   border: 1px solid rgba(170, 200, 255, 0.2);
@@ -423,7 +392,7 @@ p { margin: 0; }
 .appli-corps > * { min-width: 0; }
 .appli-tete { flex-wrap: wrap; }
 .appli-tete { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: var(--texte-3); font-size: 12px; }
-.appli-tete b { font-family: var(--titre); font-size: 17px; color: var(--texte); font-weight: 700; }
+.appli-tete b { font-family: var(--titre); font-size: 17px; color: var(--texte); font-weight: 600; }
 .appli-grille { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; min-width: 0; }
 .panneau {
   border-radius: 16px;
@@ -465,7 +434,7 @@ p { margin: 0; }
   color: var(--texte-2);
 }
 .question > span:last-child { width: 28px; height: 28px; border-radius: 999px; background: var(--degrade); flex-shrink: 0; }
-.briefing h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.briefing h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
 .briefing ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .briefing li { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 11px; background: rgba(5, 8, 19, 0.35); min-width: 0; }
 .briefing li img { width: 16px; height: 16px; }
@@ -501,9 +470,9 @@ p { margin: 0; }
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  height: 64px;
-  padding: 0 24px;
-  border-radius: 999px;
+  height: 54px;
+  padding: 0 20px;
+  border-radius: 12px;
   background: var(--verre);
   border: 1px solid var(--trait);
   font-family: var(--titre);
@@ -513,15 +482,17 @@ p { margin: 0; }
 .outil { transition: translate 0.25s ease, border-color 0.25s ease, background 0.25s ease; }
 .outil:not(.bientot):hover { translate: 0 -2px; border-color: rgba(140, 200, 255, 0.35); background: var(--verre-fort); }
 .outil img { width: 26px; height: 26px; }
+.prochainement { font-family: var(--chiffres); font-size: 12px; letter-spacing: 0.06em; color: var(--texte-3); }
+.liste-ponts + .prochainement { margin-top: 16px; }
 .outil.bientot { color: var(--texte-3); border-style: dashed; background: transparent; font-weight: 500; }
 .outil small { font-family: var(--chiffres); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ciel); }
 
 .manifeste { padding-block: 90px 40px; text-align: center; }
 .manifeste h2 {
   font-size: clamp(32px, 5vw, 64px);
-  line-height: 1.04;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  line-height: 1.06;
+  font-weight: 500;
+  letter-spacing: -0.045em;
   max-width: 18ch;
   margin-inline: auto;
 }
@@ -564,7 +535,7 @@ p { margin: 0; }
   grid-template-rows: auto 1fr auto;
   gap: 14px;
   padding: 22px 20px;
-  border-radius: 22px;
+  border-radius: 14px;
   background: linear-gradient(170deg, rgba(150, 190, 255, 0.09), rgba(150, 190, 255, 0.03));
   border: 1px solid var(--trait);
 }
@@ -579,12 +550,16 @@ p { margin: 0; }
   top: 0;
   left: 50%;
   width: min(1160px, 92%);
-  height: 1px;
+  height: 13px;
   translate: -50% 0;
-  background: linear-gradient(90deg, transparent, var(--trait) 20%, var(--trait) 80%, transparent);
+  background:
+    linear-gradient(var(--trait), var(--trait)) 0 0 / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, rgba(170, 200, 255, 0.16) 0 1px, transparent 1px 40px) 0 0 / 100% 6px no-repeat,
+    repeating-linear-gradient(90deg, rgba(170, 200, 255, 0.3) 0 1px, transparent 1px 160px) 0 0 / 100% 13px no-repeat;
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
 }
 .entete-section { display: grid; gap: 16px; max-width: 760px; }
-.entete-section h2 { font-size: clamp(30px, 4vw, 50px); line-height: 1.06; font-weight: 800; letter-spacing: -0.035em; }
+.entete-section h2 { font-size: clamp(32px, 4.4vw, 56px); line-height: 1.05; font-weight: 500; letter-spacing: -0.045em; }
 .entete-section p { color: var(--texte-2); font-size: 17.5px; max-width: 62ch; }
 
 .ciel-horaire {
@@ -633,7 +608,7 @@ p { margin: 0; }
   display: grid;
   gap: 12px;
   padding: 20px 18px 20px;
-  border-radius: 20px;
+  border-radius: 14px;
   background: var(--verre);
   border: 1px solid var(--trait);
 }
@@ -682,7 +657,7 @@ p { margin: 0; }
   gap: 16px;
   align-items: center;
   padding: 16px 18px;
-  border-radius: 18px;
+  border-radius: 12px;
   background: var(--verre);
   border: 1px solid var(--trait);
 }
@@ -712,7 +687,7 @@ p { margin: 0; }
   display: grid;
   place-items: center;
   font-family: var(--titre);
-  font-weight: 800;
+  font-weight: 500;
   font-size: 12px;
   background: var(--glace);
   color: var(--nuit);
@@ -755,7 +730,7 @@ p { margin: 0; }
   animation: contre-orbiter 60s linear infinite;
 }
 .satellite img { width: 30px; height: 30px; }
-.satellite.bientot div { background: rgba(150, 190, 255, 0.08); border: 1px dashed rgba(140, 200, 255, 0.4); box-shadow: none; font-family: var(--titre); font-weight: 800; color: var(--texte-2); font-size: 14px; }
+.satellite.bientot div { background: rgba(150, 190, 255, 0.08); border: 1px dashed rgba(140, 200, 255, 0.4); box-shadow: none; font-family: var(--titre); font-weight: 500; color: var(--texte-2); font-size: 14px; }
 @keyframes orbiter { to { transform: rotate(360deg); } }
 @keyframes contre-orbiter { to { transform: rotate(-360deg); } }
 .fiche {
@@ -772,7 +747,7 @@ p { margin: 0; }
   font-size: 12.5px;
 }
 .fiche-nom { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.fiche-nom span:first-child { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--degrade); font-family: var(--titre); font-weight: 800; font-size: 13px; color: #fff; }
+.fiche-nom span:first-child { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--degrade); font-family: var(--titre); font-weight: 500; font-size: 13px; color: #fff; }
 .fiche-nom b { display: block; font-family: var(--titre); font-size: 14.5px; }
 .fiche-nom small { color: var(--texte-3); }
 .fiche ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
@@ -788,7 +763,7 @@ p { margin: 0; }
 .validation .cadre { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: center; }
 @media (max-width: 980px) { .validation .cadre { grid-template-columns: 1fr; } }
 .brouillon {
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 22px;
   background: linear-gradient(170deg, rgba(20, 42, 107, 0.85), rgba(10, 18, 48, 0.9));
   border: 1px solid rgba(140, 200, 255, 0.3);
@@ -829,9 +804,9 @@ p { margin: 0; }
 .brouillon-pied small { color: var(--texte-3); font-size: 12.5px; }
 .brouillon-pied div { display: flex; gap: 10px; }
 .bouton-lien {
-  height: 44px;
-  padding: 0 18px;
-  border-radius: 999px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 9px;
   border: 1px solid var(--trait);
   background: transparent;
   color: var(--texte);
@@ -852,7 +827,7 @@ p { margin: 0; }
   border: 1px solid rgba(140, 200, 255, 0.28);
   color: var(--ciel);
 }
-.regle h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.regle h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
 .regle p { margin-top: 4px; color: var(--texte-2); font-size: 15px; }
 
 /* ------------------------------------------------------------------ installation */
@@ -861,7 +836,7 @@ p { margin: 0; }
 .etape {
   position: relative;
   padding: 26px 24px 28px;
-  border-radius: 24px;
+  border-radius: 14px;
   border: 1px solid var(--trait);
   background: var(--verre);
   overflow: hidden;
@@ -873,14 +848,14 @@ p { margin: 0; }
   right: 14px;
   top: -18px;
   font-family: var(--titre);
-  font-weight: 800;
+  font-weight: 500;
   font-size: 120px;
   letter-spacing: -0.06em;
   color: rgba(140, 200, 255, 0.08);
   line-height: 1;
 }
 .etape .duree { font-family: var(--chiffres); font-size: 12.5px; color: var(--ciel); }
-.etape h3 { margin-top: 10px; font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
+.etape h3 { margin-top: 10px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; }
 .etape p { margin-top: 10px; color: var(--texte-2); font-size: 15px; }
 
 /* ------------------------------------------------------------------ tarif */
@@ -894,7 +869,7 @@ p { margin: 0; }
 @media (max-width: 860px) { .tarif-grille { grid-template-columns: 1fr; } }
 .tarif-carte {
   padding: 28px 26px 30px;
-  border-radius: 26px;
+  border-radius: 16px;
   border: 1px solid var(--trait);
   background: var(--verre);
   display: grid;
@@ -902,14 +877,13 @@ p { margin: 0; }
   align-content: start;
 }
 .tarif-carte.mensuel {
-  border-color: rgba(140, 200, 255, 0.4);
-  background: linear-gradient(165deg, rgba(72, 120, 240, 0.2), rgba(150, 190, 255, 0.05) 60%);
-  box-shadow: 0 30px 80px rgba(72, 120, 240, 0.18);
+  border-color: rgba(140, 200, 255, 0.32);
+  background: linear-gradient(165deg, rgba(72, 120, 240, 0.12), rgba(150, 190, 255, 0.03) 60%);
 }
 .tarif-quand { font-family: var(--chiffres); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ciel); }
-.tarif-carte h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
+.tarif-carte h3 { font-size: 21px; font-weight: 600; letter-spacing: -0.02em; }
 .prix { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding-bottom: 16px; border-bottom: 1px dashed var(--trait); }
-.prix b { font-family: var(--titre); font-size: clamp(38px, 5vw, 56px); font-weight: 800; letter-spacing: -0.05em; line-height: 1; }
+.prix b { font-family: var(--titre); font-size: clamp(38px, 5vw, 56px); font-weight: 500; letter-spacing: -0.05em; line-height: 1; }
 .prix span { font-family: var(--chiffres); font-size: 13px; color: var(--texte-3); }
 .tarif-carte ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
 .tarif-carte li { position: relative; padding-left: 24px; color: var(--texte-2); font-size: 15px; }
@@ -934,7 +908,7 @@ p { margin: 0; }
   place-items: center;
   border: 1px solid var(--trait);
   background: var(--nuit-haute);
-  font: 700 22px var(--titre);
+  font: 400 22px var(--titre);
   color: var(--ciel);
 }
 /* Une année de paiements : une grande barre, puis douze petites toutes pareilles. */
@@ -972,9 +946,18 @@ p { margin: 0; }
 /* ------------------------------------------------------------------ l'aube : rendez-vous */
 .aube {
   position: relative;
-  background: linear-gradient(180deg, var(--nuit) 0, #0c1738 50px, #24407f 105px, #6f8fcf 155px, #b9cbee 200px, #e2eaf8 240px, var(--aube) 280px);
+  background: var(--aube);
   color: var(--encre);
-  padding-block: 270px 96px;
+  padding-block: 170px 96px;
+}
+/* Le jour se lève en arc, comme l'horizon du haut de page, avec un bord net. */
+.aube::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 120px;
+  pointer-events: none;
+  background: radial-gradient(ellipse 72% 100% at 50% 100%, transparent 99.4%, var(--nuit) 100%);
 }
 .aube .entete-section h2 { color: var(--encre); }
 .aube .entete-section p { color: var(--encre-2); }
@@ -983,7 +966,7 @@ p { margin: 0; }
   margin-top: 44px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  border-radius: 28px;
+  border-radius: 18px;
   background: var(--aube-carte);
   box-shadow: 0 40px 90px rgba(11, 21, 51, 0.16), 0 0 0 1px var(--encre-trait);
   overflow: hidden;
@@ -1115,7 +1098,7 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
 .bouton-clair {
   height: 44px;
   padding: 0 18px;
-  border-radius: 999px;
+  border-radius: 10px;
   border: 1px solid var(--encre-trait);
   background: #fff;
   color: var(--encre);
@@ -1148,12 +1131,12 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
 .questions { background: var(--aube); color: var(--encre); padding-block: 20px 110px; }
 .questions .cadre { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 50px; }
 @media (max-width: 900px) { .questions .cadre { grid-template-columns: 1fr; } }
-.questions h2 { font-size: clamp(30px, 4vw, 48px); letter-spacing: -0.035em; font-weight: 800; line-height: 1.06; }
+.questions h2 { font-size: clamp(32px, 4.4vw, 52px); letter-spacing: -0.045em; font-weight: 500; line-height: 1.05; }
 .questions .surtitre { color: var(--roi); }
 .questions .aside p { margin-top: 16px; color: var(--encre-2); }
 .faq { display: grid; gap: 10px; }
 .faq details {
-  border-radius: 18px;
+  border-radius: 12px;
   background: #fff;
   border: 1px solid var(--encre-trait);
   padding: 0 22px;
@@ -1167,7 +1150,7 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
   gap: 16px;
   padding: 20px 0;
   font-family: var(--titre);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 17px;
 }
 .faq summary::-webkit-details-marker { display: none; }
@@ -1213,7 +1196,7 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
 .pied-liens a:hover { color: var(--texte); }
 .signature { font-family: var(--chiffres); font-size: 12px; letter-spacing: 0.22em; color: var(--texte-3); }
 .mot-geant {
-  font-family: var(--titre);
+  font-family: var(--marque);
   font-weight: 800;
   font-size: clamp(90px, 24vw, 340px);
   line-height: 0.8;
@@ -1324,10 +1307,8 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
         <span class="outil"><img src="images/outils/google-agenda.png" alt="">Google Agenda</span>
         <span class="outil"><img src="images/outils/google-sheets.png" alt="">Google Sheets</span>
         <span class="outil"><img src="images/outils/excel.svg" alt="">Excel</span>
-        <span class="outil bientot"><img src="images/outils/whatsapp.svg" alt="">WhatsApp <small>bientôt</small></span>
-        <span class="outil bientot">Qonto <small>bientôt</small></span>
-        <span class="outil bientot">Pennylane <small>bientôt</small></span>
       </div>
+      <p class="prochainement">Bientôt : WhatsApp, Qonto et Pennylane</p>
     </div>
   </section>
 
@@ -1341,7 +1322,7 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
     <div class="cadre">
       <div class="entete-section">
         <p class="surtitre">Pour qui</p>
-        <h2 id="titre-pour-qui">Pour les dirigeants qui gèrent tout eux-mêmes</h2>
+        <h2 id="titre-pour-qui">Pour ceux qui gèrent tout eux-mêmes.</h2>
         <p>Le métier change, le bureau reste le même : des demandes à trier, des clients à rappeler, des rendez-vous à caler. Serevo se règle sur votre façon de travailler.</p>
       </div>
       <div class="metiers">
@@ -1373,7 +1354,7 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
     <div class="cadre">
       <div class="entete-section">
         <p class="surtitre">De 18 h à 7 h</p>
-        <h2 id="titre-nuit">Une nuit avec Serevo</h2>
+        <h2 id="titre-nuit">Une nuit avec Serevo.</h2>
         <p>
           Les demandes arrivent le soir, quand votre journée se termine. Serevo les lit au fil de
           la nuit, les relie à ce qu’il sait déjà de chaque client, et prépare le travail du matin.
@@ -1418,9 +1399,9 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
       <div>
         <div class="entete-section">
           <p class="surtitre">La fiche client au centre</p>
-          <h2 id="titre-ponts">Ce qui arrive dans un outil sert dans les autres</h2>
+          <h2 id="titre-ponts">Vos outils se parlent.</h2>
           <p>
-            Un mail, un message WhatsApp, un rendez-vous, une ligne de votre tableur : tout se
+            Un mail, un rendez-vous, une ligne de votre tableur : tout se
             range dans la fiche du client. Et un événement d’un côté prépare le travail de l’autre.
           </p>
         </div>
@@ -1434,14 +1415,11 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
             <p><b>Une demande de rendez-vous</b> reçoit vos créneaux libres, calculés sur votre agenda. Jamais une heure inventée.</p>
           </div>
           <div class="pont">
-            <div class="sens"><img src="images/outils/whatsapp.svg" alt="WhatsApp"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><img src="images/outils/gmail.png" alt="Gmail"></div>
-            <p><b>Un client qui répond sur WhatsApp</b> annule la relance prévue par mail. Il ne reçoit pas de rappel inutile.<span class="etiquette-bientot">bientôt</span></p>
-          </div>
-          <div class="pont bientot">
-            <div class="sens"><span class="texte-bientot" aria-label="Qonto">Q</span><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><img src="images/outils/excel.svg" alt="Excel"></div>
-            <p><b>Un virement reçu sur Qonto</b> retrouve le devis ou la facture qu’il règle.<span class="etiquette-bientot">bientôt</span></p>
+            <div class="sens"><img src="images/outils/outlook.svg" alt="Outlook"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><img src="images/outils/google-sheets.png" alt="Google Sheets"></div>
+            <p><b>Un mail reçu</b> rejoint la fiche du client, à côté de ses rendez-vous et de ses devis.</p>
           </div>
         </div>
+        <p class="prochainement">Bientôt : un virement Qonto retrouvera le devis qu’il règle.</p>
       </div>
 
       <div class="orbite" role="img" aria-label="La fiche de Sophie Durand au centre, entourée de Gmail, Outlook, Google Agenda, Google Sheets, Excel et WhatsApp">
@@ -1454,7 +1432,6 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
           <div class="satellite" style="--angle: 154deg"><div><img src="images/outils/excel.svg" alt=""></div></div>
           <div class="satellite" style="--angle: 206deg"><div><img src="images/outils/outlook.svg" alt=""></div></div>
           <div class="satellite" style="--angle: 257deg"><div><img src="images/outils/google-sheets.png" alt=""></div></div>
-          <div class="satellite bientot" style="--angle: 309deg"><div>Q</div></div>
         </div>
         <div class="fiche" aria-hidden="true">
           <div class="fiche-nom"><span>SD</span><span><b>Sophie Durand</b><small>Villeurbanne · cliente depuis 2024</small></span></div>
@@ -1530,7 +1507,7 @@ Durand & Associés</textarea>
     <div class="cadre">
       <div class="entete-section">
         <p class="surtitre">Installation</p>
-        <h2 id="titre-installation">On l’installe avec vous. Il vous ressemble dès le premier jour.</h2>
+        <h2 id="titre-installation">Installé avec vous, en une demi-journée.</h2>
         <p>Pas de formation à suivre. On branche vos outils et on règle Serevo sur votre façon de travailler.</p>
       </div>
       <div class="etapes">
@@ -1557,7 +1534,7 @@ Durand & Associés</textarea>
     <div class="cadre">
       <div class="entete-section">
         <p class="surtitre">Tarif</p>
-        <h2 id="titre-tarif">Une installation, puis un abonnement. Établis pour vous.</h2>
+        <h2 id="titre-tarif">Un prix établi pour vous.</h2>
         <p>Le prix dépend de vos outils, du nombre de boîtes à brancher et de ce que vous attendez de Serevo. On vous le donne par écrit après la démo, sans option cachée ni facture d’IA qui grimpe avec vos mails.</p>
       </div>
       <div class="tarif-grille">
@@ -1599,7 +1576,7 @@ Durand & Associés</textarea>
     <div class="cadre">
       <div class="entete-section">
         <p class="surtitre">Démo de 20 minutes</p>
-        <h2 id="titre-rdv">Choisissez un moment. On vous montre Serevo sur vos outils.</h2>
+        <h2 id="titre-rdv">Voyez Serevo sur vos outils.</h2>
         <p>Choisissez un jour et un créneau, laissez vos coordonnées. On vous confirme le rendez-vous le jour même.</p>
       </div>
 
@@ -1733,7 +1710,7 @@ Durand & Associés</textarea>
     <div class="cadre">
       <div class="aside">
         <p class="surtitre">Questions</p>
-        <h2 id="titre-questions">Ce que les dirigeants nous demandent</h2>
+        <h2 id="titre-questions">Questions fréquentes</h2>
         <p>Une autre question ? Posez-la pendant la démo, ou écrivez-nous.</p>
       </div>
       <div class="faq">

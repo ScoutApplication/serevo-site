@@ -262,9 +262,23 @@ p { margin: 0; }
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(-3.5%, 2.5%, 0); }
 }
-/* L'éclipse ne bouge pas : seule sa lumière respire. */
-.ciel.eclipse.pret .ruban { animation: luire 8s ease-in-out infinite alternate; }
-.ciel.eclipse.pret .ruban.second { animation: luire 5.5s ease-in-out infinite alternate-reverse; }
+/* À l'ouverture, l'éclipse se lève et s'allume ; les rayons suivent l'anneau. Ensuite elle ne
+   bouge plus : seule sa lumière respire (en partant de 1, sans saut après le lever). */
+.ciel.eclipse.pret .ruban {
+  animation:
+    lever-soleil 2.8s cubic-bezier(0.16, 0.8, 0.3, 1) both,
+    luire 8s ease-in-out 2.8s infinite alternate-reverse;
+}
+.ciel.eclipse.pret .ruban.second {
+  animation:
+    lever-soleil 3.2s cubic-bezier(0.16, 0.8, 0.3, 1) 0.4s both,
+    luire 5.5s ease-in-out 3.6s infinite alternate-reverse;
+}
+@keyframes lever-soleil {
+  0% { transform: translate3d(0, 16%, 0); opacity: 0; }
+  40% { opacity: 0.4; }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
+}
 @keyframes luire {
   from { opacity: 0.72; }
   to { opacity: 1; }

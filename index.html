@@ -238,12 +238,9 @@ p { margin: 0; }
   mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
 }
 .ciel.pret { opacity: 1; }
-.ciel-suit {
-  position: absolute;
-  inset: 0;
-  transform: translate3d(calc(var(--px, 0) * -18px), calc(var(--py, 0) * 12px), 0);
-  transition: transform 2.2s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
+.ciel-suit { position: absolute; inset: 0; }
+/* Les calques ne font que glisser et changer de luminosité : ni agrandissement ni rotation, qui
+   obligeraient le navigateur à rééchantillonner l'image à chaque instant (scintillement). */
 .ciel canvas {
   position: absolute;
   left: -8%;
@@ -251,19 +248,23 @@ p { margin: 0; }
   width: 116%;
   height: 116%;
   display: block;
+  will-change: transform, opacity;
 }
 .ciel .ruban { mix-blend-mode: screen; }
 .ciel.pret .matiere { animation: matiere 44s ease-in-out infinite alternate; }
 .ciel.pret .ruban { animation: ruban 16s ease-in-out infinite alternate, luire 7s ease-in-out infinite alternate; }
 .ciel.pret .ruban.second { animation-duration: 23s, 11s; animation-direction: alternate-reverse, alternate; }
 @keyframes matiere {
-  from { transform: scale(1) rotate(0deg) translate3d(0, 0, 0); }
-  to { transform: scale(1.07) rotate(1.6deg) translate3d(-2%, 1.4%, 0); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-2.5%, 1.6%, 0); }
 }
 @keyframes ruban {
-  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1); }
-  to { transform: translate3d(-3.5%, 2.5%, 0) rotate(-2.5deg) scale(1.04, 1.12); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-3.5%, 2.5%, 0); }
 }
+/* L'éclipse ne bouge pas : seule sa lumière respire. */
+.ciel.eclipse.pret .ruban { animation: luire 8s ease-in-out infinite alternate; }
+.ciel.eclipse.pret .ruban.second { animation: luire 5.5s ease-in-out infinite alternate-reverse; }
 @keyframes luire {
   from { opacity: 0.72; }
   to { opacity: 1; }
@@ -2328,9 +2329,7 @@ Durand & Associés</textarea>
 // parfaitement fluide. Redessiné seulement si la taille change. Sans WebGL : le ciel CSS.
 (function () {
   const ciel = document.querySelector('.ciel');
-  const ouverture = document.querySelector('.ouverture');
-  if (ciel === null || ouverture === null) return;
-  const calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (ciel === null) return;
 
   const COMMUN = `
     precision highp float;
@@ -2390,29 +2389,73 @@ Durand & Associés</textarea>
         c += mix(ROI, CIEL, 0.4) * source * 0.55 * (0.4 + f);
         gl_FragColor = vec4(c * voile(h), 1.0);
       }`,
+    // L'éclipse : un immense anneau de lumière autour du titre, comme la couronne du soleil
+    // derrière une planète (variante 0), et de fins rayons de couronne (variante 1). Plus
+    // lumineuse en haut à droite, d'où vient la lumière. Le disque reste sombre : le texte se lit.
+    eclipse: `
+      void main() {
+        vec2 uv = gl_FragCoord.xy / u_taille;
+        vec2 h = uv * 1.16 - 0.08;
+        float format = u_taille.x / u_taille.y;
+        vec2 q = vec2((h.x - 0.5) * format, h.y - 0.585);
+        float r = length(q);
+        float rayon = 0.4;
+        float d = r - rayon;
+        float angle = atan(q.y, q.x);
+        float lumiere = 0.3 + 0.7 * pow(0.5 + 0.5 * cos(angle - 0.75), 2.2);
+        vec3 c;
+        if (u_variante < 0.5) {
+          float bord = exp(-abs(d) * 85.0);
+          float dedans = exp(-max(-d, 0.0) * 16.0) * step(d, 0.0);
+          float couronne = exp(-max(d, 0.0) * 7.0) * step(0.0, d);
+          float halo = exp(-max(d, 0.0) * 2.2) * step(0.0, d);
+          c = GLACE * bord * 0.55
+            + CIEL * dedans * 0.12
+            + mix(ROI, CIEL, 0.55) * couronne * 0.32
+            + ROI * halo * 0.16;
+        } else {
+          float rayons = pow(0.5 + 0.5 * sin(angle * 26.0 + sin(angle * 7.0) * 1.6), 5.0);
+          rayons *= 0.55 + 0.45 * sin(angle * 9.0 + 1.3);
+          c = mix(ROI, CIEL, 0.5) * rayons * exp(-max(d, 0.0) * 5.0) * step(0.0, d) * 0.2;
+        }
+        gl_FragColor = vec4(c * lumiere, 1.0);
+      }`,
+    // Un ruban de soie : une large bande aux courbes lisses (aucun bruit sur son tracé), dont
+    // la largeur respire et qui se plie ; un reflet satiné glisse d'un bord à l'autre.
     ruban: `
       void main() {
         vec2 uv = gl_FragCoord.xy / u_taille;
         vec2 h = uv * 1.16 - 0.08;
-        vec2 p = (gl_FragCoord.xy - 0.5 * u_taille) / u_taille.y;
-        float f;
-        vec2 r;
-        champ(p, f, r);
-        float courbe = u_variante < 0.5
-          ? 0.30 + 0.62 * h.x + 0.07 * sin(h.x * 3.4) + 0.09 * (r.x - 0.5)
-          : 0.14 + 0.74 * h.x + 0.09 * sin(h.x * 2.3 + 1.7) + 0.07 * (r.y - 0.5);
-        float d = h.y - courbe;
-        vec3 c = ROI * exp(-abs(d) * 6.0) * 0.55 * (0.6 + f)
-               + CIEL * exp(-abs(d) * 22.0) * 0.7 * smoothstep(0.25, 0.85, f + 0.25)
-               + GLACE * exp(-abs(d) * 32.0) * 0.28;
-        float force = u_variante < 0.5 ? 1.0 : 0.5;
-        gl_FragColor = vec4(c * force * voile(h), 1.0);
+        bool second = u_variante > 0.5;
+        float centre = second
+          ? 0.17 + 0.56 * h.x + 0.06 * sin(h.x * 2.2 + 2.0) + 0.02 * sin(h.x * 5.3 + 0.4)
+          : 0.36 + 0.42 * h.x + 0.07 * sin(h.x * 3.1 - 0.6) + 0.03 * sin(h.x * 6.2 + 1.3);
+        float largeur = second
+          ? 0.04 + 0.018 * sin(h.x * 3.0 + 1.1)
+          : 0.075 + 0.035 * sin(h.x * 2.4 + 0.8);
+        // Position du reflet dans la largeur (-1 : un bord, 1 : l'autre) : le tissu tourne.
+        float pli = (second ? 0.6 : 0.55) * sin(h.x * (second ? 3.4 : 2.6) + 0.4);
+        float t = (h.y - centre) / largeur;
+        float dedans = smoothstep(1.0, 0.8, abs(t));
+        float reflet = exp(-pow((t - pli) * 3.0, 2.0));
+        float tranche = exp(-pow((abs(t) - 0.93) * 10.0, 2.0));
+        vec3 corps = mix(PROFOND * 1.4, ROI, 0.45 + 0.4 * (pli - t) * 0.5);
+        vec3 c = dedans * (corps * 0.7 + CIEL * reflet * 0.8 + GLACE * pow(reflet, 6.0) * 0.45)
+               + dedans * CIEL * tranche * 0.18
+               + ROI * exp(-max(abs(t) - 1.0, 0.0) * 2.6) * 0.16 * (1.0 - dedans);
+        // Plus de lumière vers la droite, d'où vient la source hors cadre.
+        float lumiere = 0.5 + 0.65 * smoothstep(0.0, 1.0, h.x);
+        float force = second ? 0.55 : 1.0;
+        gl_FragColor = vec4(c * lumiere * force * voile(h), 1.0);
       }`,
   };
+  // Deux formes à comparer : l'éclipse (par défaut) et les rubans de soie (?fond=soie).
+  const forme = new URLSearchParams(window.location.search).get('fond') === 'soie' ? 'ruban' : 'eclipse';
+  ciel.classList.toggle('eclipse', forme === 'eclipse');
   const CALQUES = {
     matiere: { couche: 'matiere', variante: 0 },
-    ruban: { couche: 'ruban', variante: 0 },
-    'ruban-second': { couche: 'ruban', variante: 1 },
+    ruban: { couche: forme, variante: 0 },
+    'ruban-second': { couche: forme, variante: 1 },
   };
 
   function preparer(toile) {
@@ -2468,21 +2511,6 @@ Durand & Associés</textarea>
     }, 250);
   });
 
-  if (calme) return;
-  let prevu = false;
-  let x = 0;
-  let y = 0;
-  window.addEventListener('pointermove', (evenement) => {
-    x = evenement.clientX / window.innerWidth - 0.5;
-    y = evenement.clientY / window.innerHeight - 0.5;
-    if (prevu) return;
-    prevu = true;
-    requestAnimationFrame(() => {
-      prevu = false;
-      ouverture.style.setProperty('--px', x.toFixed(3));
-      ouverture.style.setProperty('--py', y.toFixed(3));
-    });
-  }, { passive: true });
 })();
 
 // Les finitions : la barre s'affine au défilement, le menu montre la section en cours, le bord
@@ -2493,7 +2521,10 @@ Durand & Associés</textarea>
   const barre = document.querySelector('.barre');
   const nuit = document.getElementById('nuit');
   const majBarre = () => {
-    barre.classList.toggle('defile', window.scrollY > 12);
+    // Deux seuils : la barre s'affine après 48 px et ne se réélargit que sous 8 px. Avec un seul
+    // seuil, ses 20 px de différence font repasser la page de part et d'autre (elle vibre).
+    if (window.scrollY > 48) barre.classList.add('defile');
+    else if (window.scrollY < 8) barre.classList.remove('defile');
     if (nuit !== null && !calme) {
       const cadre = nuit.getBoundingClientRect();
       const avance = (window.innerHeight - cadre.top) / (cadre.height + window.innerHeight * 0.4);

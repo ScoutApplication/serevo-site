@@ -54,7 +54,7 @@
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--nuit);
@@ -63,7 +63,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 body::before {
   content: "";
@@ -1465,7 +1465,7 @@ html:not(.titres-inter) .manifeste h2 span { font-style: italic; }
 
 /* Le fond : deux rubans bleus brillants traversent la section et passent derrière la carte,
    entre deux halos de couleur et une trame de points. Ils dérivent lentement. */
-.aube { background: linear-gradient(180deg, #eef3fb 0%, #e4ecfa 55%, #eef3fb 100%); overflow-x: clip; }
+.aube { background: linear-gradient(180deg, #eef3fb 0%, #e4ecfa 55%, #eef3fb 100%); overflow: hidden; }
 .aube::after { z-index: -2; }
 @media (min-width: 1001px) { .aube { padding-bottom: 150px; } }
 .aube-decor { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
@@ -2042,6 +2042,8 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
 .chapeau-court, .apercu-mobile, .glisser, .cta-mobile { display: none; }
 @media (max-width: 720px) {
   body { font-size: 16px; }
+  .aube .entete-section::before { inset: -40px -16px -30px -16px; }
+  .metiers, .formules { overscroll-behavior-x: contain; }
   .barre .cadre { min-height: 60px; }
   .marque img { width: 34px; height: 34px; }
   .marque span { font-size: 23px; }

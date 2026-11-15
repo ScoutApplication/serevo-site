@@ -744,6 +744,87 @@ html:not(.titres-inter) .manifeste h2, html:not(.titres-inter) .appel-carte h2 {
 html:not(.titres-inter) .manifeste h2 { font-size: clamp(38px, 6vw, 80px); }
 html:not(.titres-inter) .manifeste h2 span { font-style: italic; }
 
+/* La démo filmée : sous la grande phrase, dans la lumière qui en descend. Rien ne se lance seul :
+   la vidéo et son son ne partent qu'au clic, et rien n'est téléchargé avant. */
+.demo-video { position: relative; padding-block: 34px 110px; }
+.demo-video .cadre { display: grid; justify-items: center; gap: 22px; }
+.lecteur {
+  position: relative;
+  width: min(1240px, 100%);
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--nuit) url(images/demo-affiche.jpg) center / cover no-repeat;
+  box-shadow: 0 0 0 1px rgba(170, 210, 255, 0.2), inset 0 1px 0 rgba(214, 233, 255, 0.2), 0 50px 120px -30px rgba(0, 0, 0, 0.7), 0 0 120px -20px rgba(72, 120, 240, 0.28);
+}
+.lecteur video { display: block; width: 100%; height: 100%; object-fit: cover; background: transparent; }
+.lancer-demo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--texte);
+  font: inherit;
+  background: radial-gradient(ellipse 65% 60% at 50% 50%, rgba(5, 8, 19, 0.72), rgba(5, 8, 19, 0.5) 70%, rgba(5, 8, 19, 0.38));
+  -webkit-backdrop-filter: blur(2.5px);
+  backdrop-filter: blur(2.5px);
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+.lancer-rond {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  padding-left: 4px;
+  color: var(--nuit);
+  background: #eef3ff;
+  box-shadow: 0 0 0 10px rgba(238, 243, 255, 0.12), 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.lancer-rond::before, .lancer-rond::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(214, 233, 255, 0.55);
+  animation: onde-lancer 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  pointer-events: none;
+}
+.lancer-rond::after { animation-delay: 1.2s; }
+@keyframes onde-lancer {
+  from { transform: scale(1); opacity: 0.9; }
+  to { transform: scale(1.9); opacity: 0; }
+}
+.lancer-rond svg { width: 32px; height: 32px; }
+.lancer-texte { margin-top: 6px; font-family: var(--titre); font-size: 30px; font-weight: 600; letter-spacing: -0.02em; text-shadow: 0 2px 18px rgba(5, 8, 19, 0.9); }
+.lancer-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: var(--chiffres);
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--glace);
+  background: rgba(5, 8, 19, 0.55);
+  box-shadow: 0 0 0 1px rgba(170, 210, 255, 0.25);
+}
+.lancer-demo:hover { background: radial-gradient(ellipse 65% 60% at 50% 50%, rgba(5, 8, 19, 0.6), rgba(5, 8, 19, 0.38) 70%, rgba(5, 8, 19, 0.28)); }
+.lancer-demo:hover .lancer-rond { transform: scale(1.06); box-shadow: 0 0 0 14px rgba(238, 243, 255, 0.16), 0 20px 50px -10px rgba(0, 0, 0, 0.6); }
+.lancer-demo:focus-visible { outline: 2px solid var(--ciel); outline-offset: -6px; border-radius: 18px; }
+.lecteur.lancee .lancer-demo { display: none; }
+.demo-note { font-family: var(--chiffres); font-size: 12px; letter-spacing: 0.06em; color: var(--texte-3); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .lancer-rond, .lancer-demo { transition: none; } .lancer-rond::before, .lancer-rond::after { animation: none; opacity: 0; } }
+
 /* ------------------------------------------------------------------ détails communs */
 /* Le bord d'une carte s'éclaire là où passe la souris. */
 .eclaire { position: relative; }
@@ -2041,6 +2122,14 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
    de cartes défilent d'un geste, et un bouton « Réserver » reste à portée en bas d'écran. */
 .chapeau-court, .apercu-mobile, .glisser, .cta-mobile { display: none; }
 @media (max-width: 720px) {
+  .demo-video { padding-block: 18px 64px; }
+  .demo-video .cadre { gap: 14px; }
+  .lecteur { border-radius: 12px; }
+  .lancer-demo { gap: 10px; }
+  .lancer-rond { width: 64px; height: 64px; box-shadow: 0 0 0 6px rgba(238, 243, 255, 0.12), 0 12px 30px -8px rgba(0, 0, 0, 0.6); }
+  .lancer-rond svg { width: 22px; height: 22px; }
+  .lancer-texte { margin-top: 2px; font-size: 19px; }
+  .lancer-detail { padding: 5px 10px; font-size: 10.5px; }
   body { font-size: 16px; }
   .aube .entete-section::before { inset: -40px -16px -30px -16px; }
   .metiers, .formules { overscroll-behavior-x: contain; }
@@ -2198,8 +2287,8 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
           <span>Réserver une démo de 20 min</span>
           <span class="fleche" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M3.5 10.5 10.5 3.5M5 3.5h5.5V9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
-        <a class="bouton voile" href="#nuit">
-          <span>Voir une nuit avec Serevo</span>
+        <a class="bouton voile" href="#demo">
+          <span>Voir la démo · 1 min</span>
           <span class="fleche" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M7 2.5v9M3 7.5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         </a>
       </div>
@@ -2298,6 +2387,24 @@ fieldset.champ { border: 0; margin: 0; padding: 0; min-width: 0; }
   <section class="manifeste">
     <div class="cadre">
       <h2>Aucun nouvel outil à apprendre. <span>Les vôtres se mettent à se parler.</span></h2>
+    </div>
+  </section>
+
+  <section class="demo-video" id="demo" aria-labelledby="titre-demo">
+    <div class="cadre">
+      <p class="surtitre" id="titre-demo">La démo · 1 minute, avec le son</p>
+      <div class="lecteur" id="lecteur">
+        <video id="video-demo" preload="none" playsinline poster="images/demo-affiche.jpg" width="1920" height="1080">
+          <source src="videos/serevo-demo-720p.mp4" type="video/mp4" media="(max-width: 900px)">
+          <source src="videos/serevo-demo-1080p.mp4" type="video/mp4">
+        </video>
+        <button type="button" class="lancer-demo" id="lancer-demo" aria-label="Lancer la démo de Serevo, une minute, avec le son">
+          <span class="lancer-rond" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span>
+          <span class="lancer-texte">Lancer la démo</span>
+          <span class="lancer-detail"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>1 min · avec le son</span>
+        </button>
+      </div>
+      <p class="demo-note">L’appli Serevo filmée telle quelle, sur une entreprise d’exemple.</p>
     </div>
   </section>
 
@@ -3571,6 +3678,21 @@ const RESERVATION = {
     aide.textContent = valide
       ? 'Validé. Dans Serevo, la réponse partirait maintenant, dans le fil de M. Martin.'
       : 'Préparé cette nuit à 19 h 07, avec votre ton et votre signature. Rien n’est parti.';
+  });
+})();
+
+// La démo filmée : un clic la lance avec le son et fait apparaître les commandes du lecteur.
+(() => {
+  const lecteur = document.getElementById('lecteur');
+  const video = document.getElementById('video-demo');
+  const bouton = document.getElementById('lancer-demo');
+  if (lecteur === null || video === null || bouton === null) return;
+  bouton.addEventListener('click', () => {
+    lecteur.classList.add('lancee');
+    video.controls = true;
+    video.muted = false;
+    const lecture = video.play();
+    if (lecture !== undefined) lecture.catch(() => { /* lecture refusée : les commandes restent là */ });
   });
 })();
 </script>
